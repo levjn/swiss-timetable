@@ -1,20 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function App() {
+
+  
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <ScrollView>
+        <View style={styles.connection_container}></View>
+      </ScrollView>
+    </View>  
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#4c4c4c',
+    paddingTop: 50
+    
   },
+  text: {
+    color: '#fff'
+  },
+  input: {
+    backgroundColor: '#575757'
+  },
+  connection_container: {
+    margin: 25,
+    height: 100,
+    backgroundColor: '#575757'
+  }
 });
