@@ -5,6 +5,7 @@ export interface Connection {
     from: Checkpoint,
     to: Checkpoint,
     duration: string,
+    transfers: number,
     products: string[],
     sections: Section[]
 }

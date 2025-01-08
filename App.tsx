@@ -1,10 +1,14 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { ConnectionRequest } from './TransportRequest';
-import { useState } from 'react';
+import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { getPost } from './services/connection-service';
+import { TransportResponse } from './Interfaces/TransportResponse';
+import { TransportRequest } from './Interfaces/TransportRequest';
 
 export default function App() {
 
-  let connectionRequest: ConnectionRequest;
+  const [transportResponse, setTransportResponse] = useState<TransportResponse | null>(null);
+
+  const [loading, setLoading] = useState(false)
 
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -12,8 +16,30 @@ export default function App() {
   const [time, setTime] = useState('');
   const [isArrivalTime, setIsArrivalTime] = useState('');
 
+  const fetchPost = async () => {
+    try {
+      let transportRequest: TransportRequest = {
+        from: from,
+        to: to,
+        date: date,
+        time: time,
+        isArrivalTime: isArrivalTime   
+      }
+      const data = await getPost(transportRequest)
+      setTransportResponse(data)
+    } catch (error) {
+      console.error("Fehler beim Laden der Connections: ", error
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleSubmit = () => {
-      
+      if(from !== '' && to !== '') {
+        setLoading(true);
+        fetchPost()
+      }
   }
 
   return (
@@ -24,7 +50,6 @@ export default function App() {
         placeholder='...'
         value={from}
         onChangeText={setFrom}
-        onSubmitEditing={handleSubmit}
       >
       </TextInput>
 
@@ -34,7 +59,6 @@ export default function App() {
         placeholder='...'
         value={to}
         onChangeText={setTo}
-        onSubmitEditing={handleSubmit}
       >
       </TextInput>
 
@@ -44,7 +68,6 @@ export default function App() {
         placeholder='...'
         value={date}
         onChangeText={setDate}
-        onSubmitEditing={handleSubmit}
       >
       </TextInput>
 
@@ -54,7 +77,6 @@ export default function App() {
         placeholder='...'
         value={time}
         onChangeText={setTime}
-        onSubmitEditing={handleSubmit}
       >
       </TextInput>
 
@@ -64,9 +86,10 @@ export default function App() {
         placeholder='...'
         value={isArrivalTime}
         onChangeText={setIsArrivalTime}
-        onSubmitEditing={handleSubmit}
       >
       </TextInput>
+
+      <Button title="Load" onPress={handleSubmit} />
 
       <ScrollView>
         <View style={styles.connection_container}></View>
