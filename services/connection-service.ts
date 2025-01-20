@@ -24,7 +24,9 @@ export const getPost = async (transportRequest: TransportRequest) => {
       if (transportRequest.isArrivalTime) {
         url = url + '&isArrivalTime=' + transportRequest.isArrivalTime
       }
+
       const response = await apiClient.get(API_BASE_URL + url);
+      
       return response.data;
     } catch (error) {
       console.error('Fehler beim Abrufen der Connections:', error);
