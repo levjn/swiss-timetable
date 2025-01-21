@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { TransportResponse } from '../Interfaces/TransportResponse';
 import ConnectionComponent from './ConnectionComponent';
 
@@ -7,7 +7,7 @@ const ConnectionsComponent: React.FC<TransportResponse> = ({ connections }) => {
   return (
     <View style={styles.container}>
       {connections.map((connection, index) => (
-        <ConnectionComponent index={index} connection={connection}></ConnectionComponent>
+        <ConnectionComponent key={index} index={index} connection={connection} />
       ))}
     </View>
   );
@@ -15,8 +15,9 @@ const ConnectionsComponent: React.FC<TransportResponse> = ({ connections }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10
-  }
+    padding: 15,
+    backgroundColor: '#1F1F1F',
+  },
 });
 
 export default ConnectionsComponent;
