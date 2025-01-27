@@ -1,24 +1,51 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Button } from 'react-native';
 import { Connection } from '../Interfaces/Connection';
+import ConnectionDetailsComponent from './ConnectionDetailsComponent';
 
 const ConnectionComponent: React.FC<{ connection: Connection; index: number }> = ({ connection, index }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
-    <View key={index} style={styles.connectionContainer}>
-      <View style={styles.header}>
-        <Text style={styles.routeText}>
-          {connection.from.station.name} ➔ {connection.to.station.name}
-        </Text>
-        <Text style={styles.platformText}>Platform: {connection.from.platform}</Text>
+    <TouchableOpacity onPress={openModal}>
+      <View key={index} style={styles.connectionContainer}>
+        <View style={styles.header}>
+          <Text style={styles.routeText}>
+            {connection.from.station.name} ➔ {connection.to.station.name}
+          </Text>
+          <Text style={styles.platformText}>Platform: {connection.from.platform}</Text>
+        </View>
+        <Text style={styles.durationText}>Duration: {formatDuration(connection.duration)}</Text>
+        <Text style={styles.transfersText}>Transfers: {connection.transfers}</Text>
+        <View style={styles.timeContainer}>
+          <Text style={styles.timeText}>{formatTime(connection.from.departure)}</Text>
+          <View style={styles.line}></View>
+          <Text style={styles.timeText}>{formatTime(connection.to.arrival)}</Text>
+        </View>
       </View>
-      <Text style={styles.durationText}>Duration: {formatDuration(connection.duration)}</Text>
-      <Text style={styles.transfersText}>Transfers: {connection.transfers}</Text>
-      <View style={styles.timeContainer}>
-        <Text style={styles.timeText}>{formatTime(connection.from.departure)}</Text>
-        <View style={styles.line}></View>
-        <Text style={styles.timeText}>{formatTime(connection.to.arrival)}</Text>
-      </View>
-    </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ConnectionDetailsComponent connection={connection} />
+            <Button title="Close" onPress={closeModal} />
+          </View>
+        </View>
+      </Modal>
+    </TouchableOpacity>
   );
 };
 
@@ -88,6 +115,18 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: '#87CEEB',
     borderRadius: 2,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
   },
 });
 

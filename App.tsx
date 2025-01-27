@@ -22,8 +22,8 @@ export default function App() {
       const transportRequest: TransportRequest = {
         from,
         to,
-        date: date.toISOString().split('T')[0], // Format YYYY-MM-DD
-        time: time.toTimeString().substring(0, 5), // Format hh:mm
+        date: date.toISOString().split('T')[0],
+        time: time.toTimeString().substring(0, 5),
         isArrivalTime: isArrivalTime ? '1' : '0',
       };
       const data = await getPost(transportRequest);
