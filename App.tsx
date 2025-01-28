@@ -17,6 +17,23 @@ export default function App() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  const [errors, setErrors] = useState<{ from?: string; to?: string }>({});
+
+  const validateInputs = (): boolean => {
+    const newErrors: { from?: string; to?: string } = {};
+
+    if (!from.trim()) {
+      newErrors.from = 'Origin cannot be empty.';
+    }
+
+    if (!to.trim()) {
+      newErrors.to = 'Destination cannot be empty.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const fetchPost = async () => {
     try {
       const transportRequest: TransportRequest = {
@@ -36,7 +53,7 @@ export default function App() {
   };
 
   const handleSubmit = () => {
-    if (from && to) {
+    if (validateInputs()) {
       setLoading(true);
       fetchPost();
     }
@@ -60,21 +77,29 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.label}>From</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, errors.from && styles.inputError]}
         placeholder="Enter origin..."
         placeholderTextColor="#A9A9A9"
         value={from}
-        onChangeText={setFrom}
+        onChangeText={(text) => {
+          setFrom(text);
+          if (errors.from) setErrors((prev) => ({ ...prev, from: undefined }));
+        }}
       />
+      {errors.from && <Text style={styles.errorText}>{errors.from}</Text>}
 
       <Text style={styles.label}>To</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, errors.to && styles.inputError]}
         placeholder="Enter destination..."
         placeholderTextColor="#A9A9A9"
         value={to}
-        onChangeText={setTo}
+        onChangeText={(text) => {
+          setTo(text);
+          if (errors.to) setErrors((prev) => ({ ...prev, to: undefined }));
+        }}
       />
+      {errors.to && <Text style={styles.errorText}>{errors.to}</Text>}
 
       <Text style={styles.label}>Date</Text>
       <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
@@ -145,6 +170,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     borderRadius: 8,
+  },
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
   switchContainer: {
     flexDirection: 'row',
